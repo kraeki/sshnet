@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Renci.SshNet.Messages.Connection.ChannelOpen;
+using System;
 using System.Globalization;
 
 namespace Renci.SshNet.Messages.Connection
@@ -156,6 +157,9 @@ namespace Renci.SshNet.Messages.Connection
                     break;
                 case ForwardedTcpipChannelInfo.NAME:
                     Info = new ForwardedTcpipChannelInfo(_infoBytes);
+                    break;
+                case SshVpnChannelOpenInfo.NAME:
+                    Info = new SshVpnChannelOpenInfo(_infoBytes);
                     break;
                 default:
                     throw new NotSupportedException(string.Format(CultureInfo.CurrentCulture, "Channel type '{0}' is not supported.", channelName));

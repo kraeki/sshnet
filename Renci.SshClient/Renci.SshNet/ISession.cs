@@ -79,6 +79,16 @@ namespace Renci.SshNet
         IChannelForwardedTcpip CreateChannelForwardedTcpip(uint remoteChannelNumber, uint remoteWindowSize, uint remoteChannelDataPacketSize);
 
         /// <summary>
+        /// Creates a "tun@openssh.org" SSH channel.
+        /// </summary>
+        /// <param name="tunmode">The tunmode for the tun device. only the mode peer-t-peer is currently supported.</param>
+        /// <param name="remotetun">The number of the remote tun interface. tun0 would be 0, tun1 would be 1 and so on.</param>
+        /// <returns>
+        /// A new "tun@openssh.org" SSH channel.
+        /// </returns>
+        IChannelSshVpn CreateChannelSshVpn(uint tunmode, uint remotetun);
+
+        /// <summary>
         /// Disconnects from the server.
         /// </summary>
         /// <remarks>

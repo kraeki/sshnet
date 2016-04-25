@@ -2363,6 +2363,28 @@ namespace Renci.SshNet
         }
 
         /// <summary>
+        /// Creates a "tun@openssh.org" SSH channel.
+        /// </summary>
+        /// <param name="tunmode">The mode of the tun device. Only peer-to-peer is currently supported.</param>
+        /// <returns>
+	/// A new "tun@openssh.org" SSH channel.
+        /// </returns>
+        /// <exception cref="InvalidOperationException">The size of the packet exceeds the maximum size defined by the protocol.</exception>
+        /// <remarks>
+        /// This methods returns <c>false</c> when the attempt to send the message results in a
+        /// <see cref="SocketException"/> or a <see cref="SshException"/>.
+        /// </remarks>
+        IChannelSshVpn ISession.CreateChannelSshVpn(uint tunmode, uint remote_tun)
+        {
+            return new ChannelSshVpn(this,
+                                             NextChannelNumber,
+                                             InitialLocalWindowSize,
+                                             LocalChannelDataPacketSize,
+                                             tunmode,
+                                             remote_tun);
+        }
+
+        /// <summary>
         /// Sends a message to the server.
         /// </summary>
         /// <param name="message">The message to send.</param>

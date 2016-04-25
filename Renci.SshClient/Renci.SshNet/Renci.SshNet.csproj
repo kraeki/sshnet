@@ -57,10 +57,12 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="BaseClient.cs" />
+    <Compile Include="Channels\ChannelSshVpn.cs" />
     <Compile Include="Channels\IChannel.cs" />
     <Compile Include="Channels\IChannelDirectTcpip.cs" />
     <Compile Include="Channels\IChannelForwardedTcpip.cs" />
     <Compile Include="Channels\IChannelSession.cs" />
+    <Compile Include="Channels\IChannelSshVpn.cs" />
     <Compile Include="CommandAsyncResult.cs" />
     <Compile Include="Channels\Channel.cs" />
     <Compile Include="Channels\ChannelDirectTcpip.cs" />
@@ -141,6 +143,8 @@
     <Compile Include="Common\TerminalModes.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Common\TunMode.cs" />
+    <Compile Include="Common\TunTapDeviceEventArgs.cs" />
     <Compile Include="Compression\CompressionMode.cs" />
     <Compile Include="Compression\Compressor.cs" />
     <Compile Include="Compression\Zlib.cs" />
@@ -161,6 +165,7 @@
     <Compile Include="IServiceFactory.NET.cs" />
     <Compile Include="ISession.cs" />
     <Compile Include="ISubsystemSession.cs" />
+    <Compile Include="Messages\Connection\ChannelOpen\SshVpnChannelOpenInfo.cs" />
     <Compile Include="Messages\Transport\KeyExchangeEcdhInitMessage.cs" />
     <Compile Include="Messages\Transport\KeyExchangeEcdhReplyMessage.cs" />
     <Compile Include="Netconf\INetConfSession.cs" />
@@ -482,7 +487,9 @@
     <Compile Include="SshClient.cs" />
     <Compile Include="SshCommand.cs" />
     <Compile Include="SshCommand.NET40.cs" />
+    <Compile Include="SshVpn.cs" />
     <Compile Include="SubsystemSession.cs" />
+    <Compile Include="TunTapDevice.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Renci.SshNet.snk">

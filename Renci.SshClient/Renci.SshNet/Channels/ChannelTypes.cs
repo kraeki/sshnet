@@ -22,7 +22,9 @@ namespace Renci.SshNet.Channels
         /// direct-tcpip
         /// </summary>
         DirectTcpip,
-
-
+        /// <summary>
+        /// tun@openssh.org
+        /// </summary>
+        SshVpn,
     }
 }
