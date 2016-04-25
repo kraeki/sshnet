@@ -15,51 +15,22 @@ namespace Renci.SshNet
         private static EventWaitHandle WaitObjectRead = new EventWaitHandle(false, EventResetMode.AutoReset);
         private static EventWaitHandle WaitObjectWrite = new EventWaitHandle(false, EventResetMode.AutoReset);
 
+        private string _deviceGUID;
+
         public event EventHandler<TunTapDeviceEventArgs> DataReceived;
         private bool _up = false;
         private Thread readerThread = null;
 
-        public TunTapDevice()
+        public TunTapDevice(string deviceGUID)
         {
-
-        }
-
-        static string GetDeviceGuid()
-        {
-            /*const string AdapterKey = "SYSTEM\\CurrentControlSet\\Control\\Class\\{4D36E972-E325-11CE-BFC1-08002BE10318}";
-            RegistryKey regAdapters = Registry.LocalMachine.OpenSubKey(AdapterKey, true);
-            string[] keyNames = regAdapters.GetSubKeyNames();
-            string devGuid = "";
-            foreach(string x in keyNames)
-            {
-                RegistryKey regAdapter = regAdapters.OpenSubKey(x);
-                object id = regAdapter.GetValue("ComponentId");
-                if (id != null && id.ToString() == "tap0901")
-                    devGuid = regAdapter.GetValue("NetCfgInstanceId").ToString();
-            }
-            return devGuid;*/
-            return "{CD0190F5-0FFD-485C-A581-4792922072C4}";
-        }
-
-        static string HumanName(string guid)
-        {
-            /*const string ConnectionKey = "SYSTEM\\CurrentControlSet\\Control\\Network\\{4D36E972-E325-11CE-BFC1-08002BE10318}";
-            if (guid != "")
-            {
-                RegistryKey regConnection = Registry.LocalMachine.OpenSubKey(ConnectionKey + "\\" + guid + "\\Connection", true);
-                object id = regConnection.GetValue("Name");
-                if (id != null) 
-                    return id.ToString();
-            }*/
-            return "Local Area Connection 2";
+            _deviceGUID = deviceGUID;
         }
 
         public void Initialize(TunMode tunmode, IPAddress interfaceIP, IPAddress networkAddress, IPAddress netmask)
         {
             const string UsermodeDeviceSpace = "\\\\.\\Global\\";
-            string devGuid = GetDeviceGuid();
-            Console.WriteLine(HumanName(devGuid));
-            IntPtr ptr = CreateFile(UsermodeDeviceSpace + devGuid + ".tap", FileAccess.ReadWrite,
+            Console.WriteLine(_deviceGUID);
+            IntPtr ptr = CreateFile(UsermodeDeviceSpace + _deviceGUID + ".tap", FileAccess.ReadWrite,
                 FileShare.ReadWrite, 0, FileMode.Open, FILE_ATTRIBUTE_SYSTEM | FILE_FLAG_OVERLAPPED, IntPtr.Zero);
             
             int len;

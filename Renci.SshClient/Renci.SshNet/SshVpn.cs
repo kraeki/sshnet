@@ -14,18 +14,20 @@ namespace Renci.SshNet
     public class SshVpn : BaseClient
     {
         private IChannelSshVpn _channel;
-        private TunMode _tunmode;
 
+        private string _deviceGUID;
+        private TunMode _tunmode;
         private IPAddress _interfaceIP;
         private IPAddress _networkAddress;
         private IPAddress _netmask;
 
         private TunTapDevice _device = null;
 
-        public SshVpn(ConnectionInfo connectionInfo, TunMode tunmode, string interfaceIP, string networkAddress, string netmask)
+        public SshVpn(ConnectionInfo connectionInfo, string deviceGUID, TunMode tunmode, string interfaceIP, string networkAddress, string netmask)
             : base(connectionInfo, false)
         {
-            this._tunmode = tunmode;
+            _deviceGUID = deviceGUID;
+            _tunmode = tunmode;
             if( !IPAddress.TryParse(interfaceIP, out _interfaceIP))
             {
                 throw new FormatException(String.Format("interfaceIP {0} is not in right format. Please specify in x.x.x.x format.", interfaceIP));
@@ -54,7 +56,7 @@ namespace Renci.SshNet
                 return;
             }
 
-            _device = new TunTapDevice();
+            _device = new TunTapDevice(_deviceGUID);
             _device.DataReceived += Device_DataReceived;
             _device.Initialize(_tunmode, _interfaceIP, _networkAddress, _netmask);
             _device.Start();
