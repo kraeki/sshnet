@@ -20,14 +20,16 @@ namespace Renci.SshNet
         private IPAddress _interfaceIP;
         private IPAddress _networkAddress;
         private IPAddress _netmask;
+        private uint _remotetun; // FIXME: support any
 
         private TunTapDevice _device = null;
 
-        public SshVpn(ConnectionInfo connectionInfo, string deviceGUID, TunMode tunmode, string interfaceIP, string networkAddress, string netmask)
+        public SshVpn(ConnectionInfo connectionInfo, string deviceGUID, TunMode tunmode, uint remotetun, string interfaceIP, string networkAddress, string netmask)
             : base(connectionInfo, false)
         {
             _deviceGUID = deviceGUID;
             _tunmode = tunmode;
+            _remotetun = remotetun;
             if( !IPAddress.TryParse(interfaceIP, out _interfaceIP))
             {
                 throw new FormatException(String.Format("interfaceIP {0} is not in right format. Please specify in x.x.x.x format.", interfaceIP));
@@ -64,10 +66,7 @@ namespace Renci.SshNet
 
         private void CreateChannel()
         {
-            uint tun_mode = 1;
-            uint remote_tun = 1;
-
-            this._channel = Session.CreateChannelSshVpn(tun_mode, remote_tun); // FIXME: Use TunMode
+            this._channel = Session.CreateChannelSshVpn(_tunmode, _remotetun);
             this._channel.ChannelDataReceived += Channel_DataReceived;
 
             // TODO: make sure buffers are empty

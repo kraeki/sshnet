@@ -36,22 +36,19 @@ namespace Renci.SshNet.Channels
 
         private EventWaitHandle _channelRequestResponse = new ManualResetEvent(false);
 
-        private bool _channelRequestSucces;
-
-
         public override ChannelTypes ChannelType
         {
             get { return ChannelTypes.SshVpn; }
         }
 
-        private uint tunmode;
+        private TunMode tunmode;
         private uint remote_tun;
 
-        public ChannelSshVpn(ISession session, uint localChannelNumber, uint localWindowSize, uint localPacketSize, uint tunmode, uint remote_tun)
+        public ChannelSshVpn(ISession session, uint localChannelNumber, uint localWindowSize, uint localPacketSize, TunMode tunmode, uint remotetun)
             : base(session, localChannelNumber, localWindowSize, localPacketSize)
         {
             this.tunmode = tunmode;
-            this.remote_tun = remote_tun;
+            this.remote_tun = remotetun;
             this.DataReceived += ChannelSshVpn_DataReceived;
         }
 

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Renci.SshNet.Common;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,7 +13,7 @@ namespace Renci.SshNet.Messages.Connection.ChannelOpen
         /// </summary>
         public const string NAME = "tun@openssh.com";
 
-        public uint Tunmode { get; private set; } // FIXME: use TunTapMode
+        public TunMode Tunmode { get; private set; }
         public uint Remote_tun { get; private set; }
 
         public override string ChannelType
@@ -20,7 +21,7 @@ namespace Renci.SshNet.Messages.Connection.ChannelOpen
             get { return "tun@openssh.com"; }
         }
 
-        public SshVpnChannelOpenInfo(uint tunmode, uint remote_tun)
+        public SshVpnChannelOpenInfo(TunMode tunmode, uint remote_tun)
         {
             Tunmode = tunmode;
             Remote_tun = remote_tun;
@@ -38,7 +39,7 @@ namespace Renci.SshNet.Messages.Connection.ChannelOpen
         {
             base.LoadData();
 
-            Tunmode = ReadUInt32();
+            Tunmode = (TunMode)ReadUInt32();
             Remote_tun = ReadUInt32();
         }
 
@@ -48,7 +49,7 @@ namespace Renci.SshNet.Messages.Connection.ChannelOpen
         protected override void SaveData()
         {
             base.SaveData();
-            Write(Tunmode);
+            Write((UInt32)Tunmode);
             Write(Remote_tun);
         }
     }

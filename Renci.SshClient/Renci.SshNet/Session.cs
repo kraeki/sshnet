@@ -2374,14 +2374,14 @@ namespace Renci.SshNet
         /// This methods returns <c>false</c> when the attempt to send the message results in a
         /// <see cref="SocketException"/> or a <see cref="SshException"/>.
         /// </remarks>
-        IChannelSshVpn ISession.CreateChannelSshVpn(uint tunmode, uint remote_tun)
+        IChannelSshVpn ISession.CreateChannelSshVpn(TunMode tunmode, uint remotetun)
         {
             return new ChannelSshVpn(this,
                                              NextChannelNumber,
                                              InitialLocalWindowSize,
                                              LocalChannelDataPacketSize,
                                              tunmode,
-                                             remote_tun);
+                                             remotetun);
         }
 
         /// <summary>

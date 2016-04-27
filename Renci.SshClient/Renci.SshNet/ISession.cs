@@ -86,7 +86,7 @@ namespace Renci.SshNet
         /// <returns>
         /// A new "tun@openssh.org" SSH channel.
         /// </returns>
-        IChannelSshVpn CreateChannelSshVpn(uint tunmode, uint remotetun);
+        IChannelSshVpn CreateChannelSshVpn(TunMode tunmode, uint remotetun);
 
         /// <summary>
         /// Disconnects from the server.
