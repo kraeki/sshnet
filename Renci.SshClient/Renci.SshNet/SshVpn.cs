@@ -77,15 +77,12 @@ namespace Renci.SshNet
             byte[] buf = new byte[e.Data.Length + 4];
             Buffer.BlockCopy(BitConverter.GetBytes(_channel.LocalChannelNumber), 0, buf, 0, 4);
             Buffer.BlockCopy(e.Data, 0, buf, 4, e.Data.Length);
-            Console.WriteLine(String.Format("Forward into channel")); // FIXME: remove debug logs
             _channel.SendData(buf);
         }
 
         void Channel_DataReceived(object sender, ChannelDataEventArgs e)
         {
-            Console.WriteLine(String.Format("Received data from channel {0}: {1} bytes: {2}", e.ChannelNumber, e.Data.Length, BitConverter.ToString(e.Data)));
             _device.WriteData(e.Data);
-            Console.WriteLine(String.Format("Forwared to adapter"));
         }
     }
 }
