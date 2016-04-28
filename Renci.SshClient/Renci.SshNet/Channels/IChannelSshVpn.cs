@@ -13,9 +13,7 @@ namespace Renci.SshNet.Channels
         /// </summary>
         void Open();
 
-        void SendData(byte[] data);
-
-        /// void SendDataMessage(byte[] data); // FIXME: does not work
+        // void SendDataMessage(byte[] data); // FIXME: does not work
 
 
         /// <summary>

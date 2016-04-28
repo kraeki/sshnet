@@ -148,7 +148,6 @@ namespace Renci.SshNet
 
         IntPtr ptr;
         static FileStream Tap;
-        static EventWaitHandle WaitObject, WaitObject2;
         static int BytesRead;
 
         [DllImport("Kernel32.dll", /* ExactSpelling = true, */ SetLastError = true, CharSet = CharSet.Auto)]

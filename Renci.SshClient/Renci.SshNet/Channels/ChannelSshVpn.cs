@@ -87,7 +87,7 @@ namespace Renci.SshNet.Channels
             }
         }
 
-        public void SendData(byte[] data)
+        public new void SendData(byte[] data)
         {
             try
             {
@@ -118,12 +118,12 @@ namespace Renci.SshNet.Channels
             }
         }
 
-	/// not working
-        ///public void SendDataMessage(byte[] data)
-        ///{
-            ///ChannelDataMessage a = new ChannelDataMessage(LocalChannelNumber, data);
-            ///SendMessage(new ChannelDataMessage(LocalChannelNumber, data));
-        ///}
+	// not working
+        //public void SendDataMessage(byte[] data)
+        //{
+            //ChannelDataMessage a = new ChannelDataMessage(LocalChannelNumber, data);
+            //SendMessage(new ChannelDataMessage(LocalChannelNumber, data));
+        //}
 
         /// <summary>
         /// Called when channel is opened by the server.

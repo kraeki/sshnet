@@ -161,8 +161,8 @@ namespace Renci.SshNet.Sftp
 #endif
         /// <param name="wait">The wait event handle if needed.</param>
         /// <param name="writeCompleted">The callback to invoke when the write has completed.</param>
-        void RequestWrite(byte[] handle,
-                          ulong offset,
+        void RequestWrite(byte[] handle, 
+                          ulong offset, 
                           byte[] data,
 #if TUNING
                           int length,

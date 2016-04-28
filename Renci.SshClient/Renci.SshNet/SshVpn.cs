@@ -11,6 +11,9 @@ using System.Threading;
 
 namespace Renci.SshNet
 {
+    /// <summary>
+    /// Provides VPN connection over tun devices to SSH server.
+    /// </summary>
     public class SshVpn : BaseClient
     {
         private IChannelSshVpn _channel;
@@ -24,6 +27,16 @@ namespace Renci.SshNet
 
         private TunTapDevice _device = null;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SshVpn" /> class.
+        /// </summary>
+        /// <param name="connectionInfo">The connection info.</param>
+        /// <param name="deviceGUID">The device GUID of the local (Windows) tun device.</param>
+        /// <param name="tunmode">The tun mode for the connection.</param>
+        /// <param name="remotetun">The id of the remote tun device.</param>
+        /// <param name="interfaceIP">The IP address of the local tun device.</param>
+        /// <param name="networkAddress">The network address of the local tun device.</param>
+        /// <param name="netmask">The subnet/network mask of the local tun device.</param>
         public SshVpn(ConnectionInfo connectionInfo, string deviceGUID, TunMode tunmode, uint remotetun, string interfaceIP, string networkAddress, string netmask)
             : base(connectionInfo, false)
         {
@@ -64,6 +77,9 @@ namespace Renci.SshNet
             _device.Start();
         }
         
+        /// <summary>
+        /// Called when client has disconnected from the server.
+        /// </summary>
         protected override void OnDisconnected()
         {
             _channel.Close();
