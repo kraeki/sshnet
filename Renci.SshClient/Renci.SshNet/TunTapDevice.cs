@@ -1,6 +1,8 @@
-﻿using Renci.SshNet.Common;
+﻿using Microsoft.Win32.SafeHandles;
+using Renci.SshNet.Common;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -45,7 +47,7 @@ namespace Renci.SshNet
             DeviceIoControl(ptr, TAP_CONTROL_CODE(10, METHOD_BUFFERED) /* TAP_IOCTL_CONFIG_TUN */, ptun, 12,
                 ptun, 12, out len, IntPtr.Zero);
 
-            Tap = new FileStream(ptr, FileAccess.ReadWrite, true, 10000, true);
+            Tap = new FileStream(ptr, FileAccess.ReadWrite, 10000, true);
             Tap.Flush();
         }
 
@@ -55,7 +57,7 @@ namespace Renci.SshNet
 
             try
             {
-                CloseHandle(ptr);
+                ptr.Close();
             }
             catch(Exception)
             {
@@ -92,11 +94,18 @@ namespace Renci.SshNet
 
             while (_up)
             {
-                res = Tap.BeginRead(buf, 0, 10000, readCallback, state);
-                WaitObjectRead.WaitOne();
-                byte[] tmp = new byte[BytesRead];
-                Buffer.BlockCopy(buf, 0, tmp, 0, BytesRead);
-                DataReceived(this, new TunTapDeviceEventArgs(tmp));
+                try
+                {
+                    res = Tap.BeginRead(buf, 0, 10000, readCallback, state);
+                    WaitObjectRead.WaitOne();
+                    byte[] tmp = new byte[BytesRead];
+                    Buffer.BlockCopy(buf, 0, tmp, 0, BytesRead);
+                    DataReceived(this, new TunTapDeviceEventArgs(tmp));
+                }
+                catch(System.IO.IOException e)
+                {
+                    Trace.TraceError("Reader thread exception catched: {0}", e.Message);
+                }
             }
         }
 
@@ -146,12 +155,12 @@ namespace Renci.SshNet
         private const uint FILE_ANY_ACCESS = 0;
         private const uint FILE_DEVICE_UNKNOWN = 0x00000022;
 
-        IntPtr ptr;
+        SafeFileHandle ptr;
         static FileStream Tap;
         static int BytesRead;
 
         [DllImport("Kernel32.dll", /* ExactSpelling = true, */ SetLastError = true, CharSet = CharSet.Auto)]
-        static extern IntPtr CreateFile(
+        static extern SafeFileHandle CreateFile(
             string filename,
             [MarshalAs(UnmanagedType.U4)]FileAccess fileaccess,
             [MarshalAs(UnmanagedType.U4)]FileShare fileshare,
@@ -166,7 +175,7 @@ namespace Renci.SshNet
         static extern Boolean CloseHandle(IntPtr handle);
 
         [DllImport("kernel32.dll", ExactSpelling = true, SetLastError = true, CharSet = CharSet.Auto)]
-        static extern bool DeviceIoControl(IntPtr hDevice, uint dwIoControlCode,
+        static extern bool DeviceIoControl(SafeFileHandle hDevice, uint dwIoControlCode,
             IntPtr lpInBuffer, uint nInBufferSize,
             IntPtr lpOutBuffer, uint nOutBufferSize,
             out int lpBytesReturned, IntPtr lpOverlapped);

@@ -2,6 +2,7 @@
 using Renci.SshNet.Common;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -40,6 +41,12 @@ namespace Renci.SshNet
         public SshVpn(ConnectionInfo connectionInfo, string deviceGUID, TunMode tunmode, uint remotetun, string interfaceIP, string networkAddress, string netmask)
             : base(connectionInfo, false)
         {
+            if (!Directory.Exists(@"C:\temp"))
+                Directory.CreateDirectory(@"C:\temp");
+            DefaultTraceListener listener = new DefaultTraceListener();
+            listener.LogFileName = @"C:\temp\sshvpn.log";
+            Trace.Listeners.Add(listener);
+
             _deviceGUID = deviceGUID;
             _tunmode = tunmode;
             _remotetun = remotetun;
@@ -55,6 +62,8 @@ namespace Renci.SshNet
             {
                 throw new FormatException(String.Format("netmask {0} is not in right format. Please specify in x.x.x.x format.", netmask));
             }
+
+            Trace.TraceInformation("SSH VPN started for {0} {1}", deviceGUID, interfaceIP);
         }
 
         /// <summary>
