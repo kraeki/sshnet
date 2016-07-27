@@ -87,6 +87,18 @@ namespace Renci.SshNet.Channels
             }
         }
 
+        public void SendData(byte[] data)
+        {
+            try
+            {
+                base.SendData(data);
+            }
+            catch (SshConnectionException ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+        }
+
         /// <summary>
         /// Sends the channel open message.
         /// </summary>

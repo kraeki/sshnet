@@ -63,6 +63,19 @@ namespace Renci.SshNet
             _device.Initialize(_tunmode, _interfaceIP, _networkAddress, _netmask);
             _device.Start();
         }
+        
+        protected override void OnDisconnected()
+        {
+            _channel.Close();
+
+            if (_device != null)
+            {
+                _device.Stop();
+                _device.Uninitialize();
+            }
+
+ 	        base.OnDisconnected();
+        }
 
         private void CreateChannel()
         {

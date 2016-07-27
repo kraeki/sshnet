@@ -29,8 +29,7 @@ namespace Renci.SshNet
         public void Initialize(TunMode tunmode, IPAddress interfaceIP, IPAddress networkAddress, IPAddress netmask)
         {
             const string UsermodeDeviceSpace = "\\\\.\\Global\\";
-            Console.WriteLine(_deviceGUID);
-            IntPtr ptr = CreateFile(UsermodeDeviceSpace + _deviceGUID + ".tap", FileAccess.ReadWrite,
+            ptr = CreateFile(UsermodeDeviceSpace + _deviceGUID + ".tap", FileAccess.ReadWrite,
                 FileShare.ReadWrite, 0, FileMode.Open, FILE_ATTRIBUTE_SYSTEM | FILE_FLAG_OVERLAPPED, IntPtr.Zero);
             
             int len;
@@ -50,6 +49,19 @@ namespace Renci.SshNet
             Tap.Flush();
         }
 
+        public void Uninitialize()
+        {
+            Tap.Close();
+
+            try
+            {
+                CloseHandle(ptr);
+            }
+            catch(Exception)
+            {
+            }
+        }
+
         public void Start()
         {
             if( _up )
@@ -66,6 +78,7 @@ namespace Renci.SshNet
         public void Stop()
         {
             _up = false;
+            WaitObjectRead.Set();
             readerThread.Join();
         }
 
@@ -81,7 +94,6 @@ namespace Renci.SshNet
             {
                 res = Tap.BeginRead(buf, 0, 10000, readCallback, state);
                 WaitObjectRead.WaitOne();
-                Console.WriteLine(String.Format("Received {0} bytes data from adapter: {1}", BytesRead, BitConverter.ToString(buf, 0, BytesRead)));
                 byte[] tmp = new byte[BytesRead];
                 Buffer.BlockCopy(buf, 0, tmp, 0, BytesRead);
                 DataReceived(this, new TunTapDeviceEventArgs(tmp));
@@ -109,8 +121,14 @@ namespace Renci.SshNet
 
         private static void ReadDataCallback(IAsyncResult asyncResult)
         {
-            BytesRead = Tap.EndRead(asyncResult);
-            WaitObjectRead.Set();
+            try
+            {
+                BytesRead = Tap.EndRead(asyncResult);
+                WaitObjectRead.Set();
+            }
+            catch(Exception)
+            {
+            }
         }
 
         #region diver stuff
@@ -128,6 +146,7 @@ namespace Renci.SshNet
         private const uint FILE_ANY_ACCESS = 0;
         private const uint FILE_DEVICE_UNKNOWN = 0x00000022;
 
+        IntPtr ptr;
         static FileStream Tap;
         static EventWaitHandle WaitObject, WaitObject2;
         static int BytesRead;
@@ -143,6 +162,9 @@ namespace Renci.SshNet
             IntPtr template);
         const int FILE_ATTRIBUTE_SYSTEM = 0x4;
         const int FILE_FLAG_OVERLAPPED = 0x40000000;
+
+        [DllImport("Kernel32.dll")]
+        static extern Boolean CloseHandle(IntPtr handle);
 
         [DllImport("kernel32.dll", ExactSpelling = true, SetLastError = true, CharSet = CharSet.Auto)]
         static extern bool DeviceIoControl(IntPtr hDevice, uint dwIoControlCode,
